@@ -67,6 +67,11 @@
 
     BlazorBattles.Shared.UserRegister user = new BlazorBattles.Shared.UserRegister();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await UnitService.LoadUnitAsync();
+    }
+
     void HandleRegistration()
     {
         NavigationManager.NavigateTo("login");
