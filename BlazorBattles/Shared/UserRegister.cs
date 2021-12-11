@@ -24,7 +24,7 @@ namespace BlazorBattles.Shared
 
         [Range(0, 1000, ErrorMessage = "Please choose a number between 0 and 1000.")]
         public int Bananas { get; set; } = 100;
-        public string StartUnitId { get; set; } = "1";
+        public int StartUnitId { get; set; } = 1;
         public DateTime DateOfBirth { get; set; } = DateTime.Now;
 
         [Range(typeof(bool), "true", "true", ErrorMessage = "Only confirmed users can play!")]
