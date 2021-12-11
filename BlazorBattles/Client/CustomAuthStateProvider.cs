@@ -33,9 +33,11 @@ namespace BlazorBattles.Client
             _http.DefaultRequestHeaders.Authorization = null;
 
             if (!string.IsNullOrEmpty(authToken))
-            {
+        {
                 try
                 {
+                   new Claim(ClaimTypes.Name, "Lawrence")
+                }, "Test authentication type");
 
                     identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
                     _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.Replace("\"",""));
