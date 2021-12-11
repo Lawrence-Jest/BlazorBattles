@@ -16,15 +16,16 @@ namespace BlazorBattles.Client
     {
         private readonly ILocalStorageService _localStorageService;
         private readonly HttpClient _http;
-        private readonly IBananaService _bananaSevice;
+        private readonly IBananaService _bananaService;
 
         public CustomAuthStateProvider(ILocalStorageService localStorageService, HttpClient http,
-            IBananaService bananaSevice)
+            IBananaService bananaService)
         {
-           _localStorageService = localStorageService;
+            _localStorageService = localStorageService;
             _http = http;
-            _bananaSevice = bananaSevice;
+            _bananaService = bananaService;
         }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
@@ -33,15 +34,12 @@ namespace BlazorBattles.Client
             _http.DefaultRequestHeaders.Authorization = null;
 
             if (!string.IsNullOrEmpty(authToken))
-        {
+            {
                 try
                 {
-                   new Claim(ClaimTypes.Name, "Lawrence")
-                }, "Test authentication type");
-
                     identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
-                    _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.Replace("\"",""));
-                    await _bananaSevice.GetBananas();
+                    _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                    await _bananaService.GetBananas();
                 }
                 catch (Exception)
                 {
@@ -56,13 +54,11 @@ namespace BlazorBattles.Client
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
-
-          
         }
 
         private byte[] ParseBase64WithoutPadding(string base64)
         {
-            switch (base64.Length % 4) 
+            switch (base64.Length % 4)
             {
                 case 2: base64 += "=="; break;
                 case 3: base64 += "="; break;
@@ -70,7 +66,7 @@ namespace BlazorBattles.Client
             return Convert.FromBase64String(base64);
         }
 
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt) 
+        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var payload = jwt.Split('.')[1];
             var jsonBytes = ParseBase64WithoutPadding(payload);
@@ -78,8 +74,6 @@ namespace BlazorBattles.Client
             var claims = keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
 
             return claims;
-
         }
-
     }
 }
